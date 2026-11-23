@@ -1,0 +1,32 @@
+
+# Virtual environments
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+
+# Uploaded resumes and private data
+uploads/*
+!uploads/.gitkeep
+
+# IDE and system files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

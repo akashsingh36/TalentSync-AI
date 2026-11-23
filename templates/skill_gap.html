@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Skill gap · TalentSync AI{% endblock %}{% block heading %}Skill gap analysis{% endblock %}
+{% block content %}<div class="welcome-row"><div><h2>{{ result.name }} · {{ result.title }}</h2><p>Skills detected in the resume compared with the role's requirements.</p></div><span class="big-score">{{ result.score }}<small>%</small></span></div>
+<div class="two-col"><div class="panel"><h3><span class="green-text">✓ Matched skills</span></h3><div class="chip-list">{% for s in result.matched_skills.split(',') if s.strip() %}<span class="chip success-chip">{{ s }}</span>{% else %}<p class="muted">No matched skills detected.</p>{% endfor %}</div></div>
+<div class="panel"><h3><span class="orange-text">＋ Skills to review</span></h3><div class="chip-list">{% for s in result.missing_skills.split(',') if s.strip() %}<span class="chip warning-chip">{{ s }}</span>{% else %}<p class="muted">No missing skills detected.</p>{% endfor %}</div></div></div>
+<div class="panel"><div class="panel-heading"><div><h3>Interview question starter</h3><p>Generate role-related prompts from the detected skill list.</p></div><button class="btn secondary" id="generateQuestions">Generate questions</button></div><div id="questionOutput" class="question-list"><p class="muted">Questions will appear here.</p></div></div>
+<div class="notice"><b>Learning recommendation</b><span>Use missing skills as discussion topics, not automatic rejection criteria. Confirm whether each skill is genuinely required for the role.</span></div>
+{% endblock %}
+{% block scripts %}<script>
+document.getElementById('generateQuestions').addEventListener('click',async()=>{
+ const skills={{ (result.matched_skills + ',' + result.missing_skills).split(',')|map('trim')|select|list|tojson }};
+ const out=document.getElementById('questionOutput'); out.innerHTML='<p>Generating…</p>';
+ try { const res=await fetch('{{ url_for("interview_questions") }}',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({skills})});
+ const data=await res.json(); out.innerHTML='';
+ (data.questions||[]).forEach((q,i)=>{const p=document.createElement('p');p.textContent=(i+1)+'. '+q;out.appendChild(p);});
+ } catch(e){out.textContent='Could not generate questions.';}
+});
+</script>{% endblock %}

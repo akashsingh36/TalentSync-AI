@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Analytics · TalentSync AI{% endblock %}{% block heading %}Recruitment analytics{% endblock %}
+{% block content %}<div class="welcome-row"><div><h2>Understand your talent pipeline</h2><p>Explore screening activity and the skills appearing in uploaded resumes.</p></div></div>
+<div class="dashboard-grid"><div class="panel chart-panel"><div class="panel-heading"><div><h3>Monthly screening activity</h3><p>Number of screening runs over time</p></div></div><div class="chart-wrap tall"><canvas id="monthlyChart"></canvas></div></div>
+<div class="panel chart-panel"><div class="panel-heading"><div><h3>Most detected skills</h3><p>Frequency in candidate resumes</p></div></div><div class="chart-wrap tall"><canvas id="skillsChart"></canvas></div></div></div>
+<div class="notice"><b>Interpretation</b><span>Skill frequency describes this application's uploaded sample only. It should not be interpreted as labour-market demand or candidate quality.</span></div>
+{% endblock %}
+{% block scripts %}<script>
+const monthly={{ monthly|tojson }}, skills={{ top_skills|tojson }};
+new Chart(document.getElementById('monthlyChart'),{type:'line',data:{labels:monthly.map(x=>x.month),datasets:[{label:'Screenings',data:monthly.map(x=>x.total),borderColor:'#6c63ff',backgroundColor:'rgba(108,99,255,.12)',fill:true,tension:.35}]},options:{maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+new Chart(document.getElementById('skillsChart'),{type:'bar',data:{labels:skills.map(x=>x[0]),datasets:[{label:'Candidates',data:skills.map(x=>x[1]),backgroundColor:'#20b98b',borderRadius:6}]},options:{indexAxis:'y',maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true}}}});
+</script>{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}{{ candidate.name }} · TalentSync AI{% endblock %}{% block heading %}Candidate profile{% endblock %}
+{% block content %}<div class="welcome-row"><div><h2>{{ candidate.name }}</h2><p>{{ candidate.email or 'Email not provided' }} · Resume: {{ candidate.filename }}</p></div><a class="btn secondary" href="{{ url_for('candidates') }}">← Candidates</a></div>
+<div class="panel profile-panel"><h3>Detected skills</h3><div class="chip-list">{% for skill in candidate.skills.split(',') if skill.strip() %}<span class="chip">{{ skill }}</span>{% else %}<span class="muted">No skills detected</span>{% endfor %}</div></div>
+<h3 class="section-title">Screening history</h3>
+{% for r in results %}<div class="panel result-card"><div class="result-head"><div><span class="eyebrow">JOB MATCH</span><h3>{{ r.job_title }}</h3></div><div class="big-score">{{ r.score }}<small>%</small></div></div>
+<div class="score-track"><span style="width:{{ [r.score,100]|min }}%"></span></div>
+<div class="component-grid"><div><small>Skill coverage</small><b>{{ r.skill_coverage }}%</b></div><div><small>Text similarity</small><b>{{ r.semantic_similarity }}%</b></div><div><small>Experience component</small><b>{{ r.experience_score }}%</b></div></div>
+<div class="gap-columns"><div><b class="green-text">Matched skills</b><p>{{ r.matched_skills or 'No matching skills detected' }}</p></div><div><b class="orange-text">Skills to review</b><p>{{ r.missing_skills or 'No missing skills detected' }}</p></div></div>
+<a class="text-link" href="{{ url_for('skill_gap',candidate_id=candidate.id,job_id=r.job_id) }}">Open skill gap analysis →</a>
+</div>{% else %}<div class="panel empty-state">No screening results found.</div>{% endfor %}
+{% endblock %}

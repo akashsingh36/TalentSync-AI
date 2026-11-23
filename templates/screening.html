@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block title %}Resume screening · TalentSync AI{% endblock %}{% block heading %}Resume screening{% endblock %}
+{% block content %}
+<div class="welcome-row"><div><h2>Analyze a candidate resume</h2><p>Upload a PDF or DOCX and compare it with a selected job description.</p></div></div>
+<div class="two-col screening-layout">
+<form class="panel form-panel" method="post" enctype="multipart/form-data">
+<div class="step-label">01 · CANDIDATE DETAILS</div><label>Candidate name *</label><input name="candidate_name" required placeholder="Enter candidate name"><label>Email address</label><input type="email" name="candidate_email" placeholder="candidate@example.com">
+<div class="step-label">02 · SELECT JOB</div><label>Job opening *</label><select name="job_id" required><option value="">Choose a job role</option>{% for job in jobs %}<option value="{{ job.id }}">{{ job.title }}</option>{% endfor %}</select>
+<div class="step-label">03 · UPLOAD RESUME</div><label class="upload-box"><input type="file" name="resume" accept=".pdf,.docx" required><span class="upload-icon">↑</span><b>Choose resume file</b><small>PDF or DOCX · Maximum 8 MB</small></label>
+<button class="btn primary full" {% if not jobs %}disabled{% endif %}>Run AI-assisted screening →</button>
+{% if not jobs %}<p class="form-hint">Create a job opening first before screening resumes.</p>{% endif %}
+</form>
+<div class="panel process-panel"><h3>What the analysis evaluates</h3>
+<div class="process-item"><span class="process-num">01</span><div><b>Resume text extraction</b><p>Read text from PDF and DOCX files.</p></div></div>
+<div class="process-item"><span class="process-num">02</span><div><b>Skill identification</b><p>Extract skills from a curated technical vocabulary.</p></div></div>
+<div class="process-item"><span class="process-num">03</span><div><b>Semantic/text similarity</b><p>Compare resume and role text using TF-IDF cosine similarity.</p></div></div>
+<div class="process-item"><span class="process-num">04</span><div><b>Explainable match report</b><p>Show matched skills, missing skills and score components.</p></div></div>
+<div class="notice"><b>Fair-use reminder</b><span>Do not use protected characteristics for ranking. Review the original resume and validate extracted information before making any decision.</span></div>
+</div></div>{% endblock %}

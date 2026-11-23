@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}TalentSync AI{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="workspace-dark {% if request.endpoint == 'dashboard' %}dashboard-page{% endif %}">
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-mark">T</span><span>TalentSync <b>AI</b></span></a>
+    <div class="side-label">WORKSPACE</div>
+    <nav>
+      <a class="{% if request.endpoint == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}"><span>▦</span> Overview</a>
+      <a class="{% if request.endpoint == 'screening' %}active{% endif %}" href="{{ url_for('screening') }}"><span>⌕</span> Resume Screening</a>
+      <a class="{% if request.endpoint == 'matching' %}active{% endif %}" href="{{ url_for('matching') }}"><span>⇄</span> Job Matching</a>
+      <a class="{% if request.endpoint in ['candidates','candidate_detail','skill_gap'] %}active{% endif %}" href="{{ url_for('candidates') }}"><span>♙</span> Candidates</a>
+      <a class="{% if request.endpoint == 'jobs' %}active{% endif %}" href="{{ url_for('jobs') }}"><span>▤</span> Job Openings</a>
+      <a class="{% if request.endpoint == 'analytics' %}active{% endif %}" href="{{ url_for('analytics') }}"><span>▥</span> Analytics</a>
+    </nav>
+    <div class="sidebar-bottom"><div class="ai-status"><span class="pulse"></span><div><b>AI Engine Active</b><small>Screening workspace</small></div></div><small class="muted">TalentSync AI · Student project</small></div>
+  </aside>
+  <main class="main-area">
+    <header class="topbar"><div><span class="eyebrow">RECRUITMENT INTELLIGENCE</span><h1>{% block heading %}Overview{% endblock %}</h1></div><div class="top-actions"><span class="live-dot"></span><span>System operational</span><div class="avatar">HR</div></div></header>
+    <section class="page-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}{% for category,message in messages %}<div class="alert {{ category }}">{{ message }}</div>{% endfor %}{% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+      <footer>TalentSync AI <span>·</span> AI-assisted recruitment. All recommendations require human review.</footer>
+    </section>
+  </main>
+</div>
+{% block scripts %}{% endblock %}
+</body></html>

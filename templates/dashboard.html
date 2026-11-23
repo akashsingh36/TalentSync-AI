@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}TalentSync AI · Command Center{% endblock %}
+{% block heading %}Command Center{% endblock %}
+{% block content %}
+<div class="dash-toolbar">
+  <div><div class="eyebrow">RECRUITMENT INTELLIGENCE</div><h2>Your talent pipeline, visualized.</h2><p>Live overview of screening activity, candidate fit and hiring momentum.</p></div>
+  <div class="toolbar-actions"><button class="icon-btn" id="themeToggle" title="Toggle theme">☾</button><button class="btn glass-btn" id="exportCsv">↓ Export activity</button><a class="btn primary glow-btn" href="{{ url_for('screening') }}">＋ New screening</a></div>
+</div>
+<section class="hero-3d">
+  <div class="hero-copy">
+    <span class="hero-kicker"><span class="pulse"></span> TALENTSYNC INTELLIGENCE ENGINE</span>
+    <h2>Find the <span>right talent.</span><br>With more clarity.</h2>
+    <p>Turn resumes into structured insights. Explore skill coverage, role relevance and candidate signals — with a recruiter always in control.</p>
+    <div class="hero-actions"><a href="{{ url_for('screening') }}" class="btn hero-btn">Analyze a resume <span>↗</span></a><a href="{{ url_for('jobs') }}" class="hero-secondary">Manage job openings →</a></div>
+    <div class="hero-trust"><span>✦ Explainable scoring</span><span>✦ Skill intelligence</span><span>✦ Human-reviewed</span></div>
+  </div>
+  <div class="hero-visual"><div class="orb-glow"></div><div class="orb-ring ring-one"></div><div class="orb-ring ring-two"></div><div class="orb-core"><div class="orb-grid"></div><div class="orb-center">TS<span>AI</span></div></div><div class="float-chip chip-top"><i></i><span>AI MATCH ENGINE</span><b>ONLINE</b></div><div class="float-chip chip-bottom"><span class="chip-icon">✧</span><div><small>SCREENING SIGNAL</small><b>Skills + Context</b></div></div><div class="orbit-dot dot-a"></div><div class="orbit-dot dot-b"></div></div>
+  <div class="hero-bottom-line"><span>RECRUITMENT WORKSPACE / OVERVIEW</span><span>SECURE LOCAL INSTANCE <b>●</b></span></div>
+</section>
+<div class="section-heading"><div><span class="eyebrow">PERFORMANCE SNAPSHOT</span><h3>Workspace metrics</h3></div><span class="updated-label"><i></i> Calculated from your database</span></div>
+<div class="stats-grid interactive-stats">
+  <article class="stat-card tilt-card"><div class="stat-top"><span>Total candidates</span><span class="stat-icon violet">♙</span></div><strong class="count-up" data-value="{{ metrics.candidates }}">0</strong><small>Unique candidate profiles</small><div class="stat-foot"><span>PROFILE DATABASE</span><span>↗</span></div></article>
+  <article class="stat-card tilt-card"><div class="stat-top"><span>Job openings</span><span class="stat-icon blue">▤</span></div><strong class="count-up" data-value="{{ metrics.jobs }}">0</strong><small>Roles available for matching</small><div class="stat-foot"><span>ROLE INVENTORY</span><span>↗</span></div></article>
+  <article class="stat-card tilt-card"><div class="stat-top"><span>Screening runs</span><span class="stat-icon cyan">⌕</span></div><strong class="count-up" data-value="{{ metrics.screenings }}">0</strong><small>Total resume analyses</small><div class="stat-foot"><span>AI WORKLOAD</span><span>↗</span></div></article>
+  <article class="stat-card tilt-card"><div class="stat-top"><span>Average match score</span><span class="stat-icon green">◎</span></div><strong><span class="count-up" data-value="{{ metrics.average }}">0</span><em>%</em></strong><small>{{ metrics.shortlisted }} screening scores at 70%+</small><div class="stat-foot"><span>RELEVANCE INDEX</span><span>↗</span></div></article>
+</div>
+<div class="dashboard-grid enhanced-grid">
+  <div class="panel chart-panel"><div class="panel-heading"><div><span class="eyebrow">CANDIDATE QUALITY</span><h3>Screening distribution</h3><p>Explore score bands across all screening runs.</p></div><span class="chart-badge">01 / INSIGHTS</span></div><div class="chart-wrap"><canvas id="scoreChart"></canvas></div><div class="chart-legend"><span><i class="legend-green"></i> Strong fit · 70%+</span><span><i class="legend-yellow"></i> Review · 40–69%</span><span><i class="legend-grey"></i> Lower · under 40%</span></div></div>
+  <div class="panel chart-panel"><div class="panel-heading"><div><span class="eyebrow">ROLE ACTIVITY</span><h3>Screenings by job</h3><p>Which openings are attracting the most analysis?</p></div><span class="chart-badge">02 / ACTIVITY</span></div><div class="chart-wrap"><canvas id="jobsChart"></canvas></div></div>
+</div>
+<div class="panel table-panel activity-panel">
+  <div class="panel-heading activity-heading"><div><span class="eyebrow">LATEST PIPELINE EVENTS</span><h3>Recent screening activity</h3><p>Search, inspect and export recent candidate-to-role comparisons.</p></div><div class="table-tools"><input type="search" id="activitySearch" placeholder="Search candidate or role…"><a class="text-link" href="{{ url_for('candidates') }}">All candidates ↗</a></div></div>
+  {% if recent %}<div class="table-scroll"><table id="activityTable"><thead><tr><th>Candidate</th><th>Job role</th><th>Match score</th><th>Screened at</th><th>Profile</th></tr></thead><tbody>{% for r in recent %}<tr><td><span class="candidate-avatar">{{ r.name[:1]|upper }}</span><b>{{ r.name }}</b></td><td>{{ r.title }}</td><td><span class="score-pill {% if r.score >= 70 %}good{% elif r.score >= 40 %}mid{% else %}low{% endif %}">{{ r.score }}%</span></td><td>{{ r.created_at }}</td><td><a class="text-link" href="{{ url_for('candidates') }}">View profile →</a></td></tr>{% endfor %}</tbody></table></div><div class="table-empty" id="noRows" hidden>No matching activity found.</div>
+  {% else %}<div class="empty-state"><div class="empty-icon">⌕</div><b>Your talent pipeline is ready</b><p>Create a job opening, then upload a resume to see live analytics here.</p><a class="btn primary" href="{{ url_for('jobs') }}">Create first job</a></div>{% endif %}
+</div>
+<div class="notice"><b>Responsible AI note</b><span>The match score is a configurable heuristic based on skill coverage, TF-IDF text similarity and stated experience. It is not a probability of job performance or an automated hiring decision. Always review source resumes and keep a human decision-maker in the loop.</span></div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+<script>window.TALENTSYNC_DATA={scoreCounts:{{ score_counts|tojson }},jobCounts:{{ job_counts|tojson }}};</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
